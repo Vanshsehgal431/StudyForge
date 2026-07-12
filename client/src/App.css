@@ -1,0 +1,143 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #d9e75c;
+  --accent-dark: #cbdb4d;
+  --accent-tint: #f3f6df;
+  --text-primary: #14213d;
+  --text-secondary: #767b85;
+  --border: #e8e9e2;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Inter", Arial, sans-serif;
+}
+
+body {
+  position: relative;
+  background: #fbfbf8;
+}
+
+/* ============== Login page only ============== */
+/* Every rule below is scoped under .login-container so it can never
+   leak onto buttons/links/inputs on other pages. */
+
+.login-container {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container .login-card {
+  width: 340px;
+  background: white;
+  padding: 26px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(20, 33, 61, 0.08);
+}
+
+.login-container .logo {
+  text-align: center;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.login-container .subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.login-container .input-group {
+  margin-bottom: 13px;
+}
+
+.login-container .input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.login-container .input-group input {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  font-size: 13px;
+  transition: border-color 0.15s ease;
+}
+
+.login-container .input-group input:focus {
+  border-color: var(--text-primary);
+}
+
+.login-container .remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 11px 0;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+
+.login-container button {
+  width: 100%;
+  padding: 9px;
+  background: var(--accent);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.login-container button:hover {
+  background: var(--accent-dark);
+  box-shadow: 0 6px 16px rgba(20, 33, 61, 0.08);
+}
+
+.login-container button:active {
+  transform: translateY(0);
+}
+
+.login-container a {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.login-container hr {
+  margin: 18px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.login-container .error {
+  color: #c93f3f;
+  font-size: 13px;
+  margin-bottom: 10px;
+  text-align: center;
+}
