@@ -4,15 +4,20 @@ import upload from "../middleware/uploadMiddleware.js";
 
 import {
   deleteNote,
-  getMyNotes,
+  getNotesByChapter,
   uploadNote,
 } from "../controllers/noteController.js";
 
 const router = express.Router();
 
-router.post("/upload", authMiddleware, upload.single("file"), uploadNote);
+router.post(
+  "/chapter/:chapterId",
+  authMiddleware,
+  upload.single("file"),
+  uploadNote,
+);
 
-router.get("/", authMiddleware, getMyNotes);
+router.get("/chapter/:chapterId", authMiddleware, getNotesByChapter);
 
 router.delete("/:id", authMiddleware, deleteNote);
 

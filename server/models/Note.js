@@ -8,10 +8,10 @@ const noteSchema = new mongoose.Schema(
       trim: true,
     },
 
-    subject: {
-      type: String,
+    chapter: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Chapter",
       required: true,
-      trim: true,
     },
 
     fileName: {
@@ -20,6 +20,11 @@ const noteSchema = new mongoose.Schema(
     },
 
     fileUrl: {
+      type: String,
+      required: true,
+    },
+
+    publicId: {
       type: String,
       required: true,
     },

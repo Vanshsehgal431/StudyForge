@@ -1,36 +1,27 @@
 import multer from "multer";
-import path from "path";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
-
-    cb(null, uniqueName + path.extname(file.originalname));
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "studyforge-notes",
+    resource_type: "auto",
+    allowed_formats: ["pdf", "png", "jpg", "jpeg"],
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "application/pdf",
-    "image/png",
-    "image/jpeg",
-    "image/jpg",
-  ];
+  const allowed = ["application/pdf", "image/png", "image/jpeg", "image/jpg"];
 
-  if (allowedTypes.includes(file.mimetype)) {
+  if (allowed.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF and Images are allowed"), false);
+    cb(new Error("Only PDF and Images are allowed."), false);
   }
 };
 
-const upload = multer({
+export default multer({
   storage,
   fileFilter,
 });
-
-export default upload;

@@ -1,77 +1,97 @@
-import fs from "fs";
-import path from "path";
+import cloudinary from "../config/cloudinary.js";
+import Chapter from "../models/Chapter.js";
 import Note from "../models/Note.js";
 
-async function uploadNote(req, res) {
+export async function uploadNote(req, res) {
   try {
-    const { title, subject } = req.body;
+    const { chapterId } = req.params;
+    const { title } = req.body;
+
+    const chapter = await Chapter.findOne({
+      _id: chapterId,
+      user: req.user.id,
+    });
+
+    if (!chapter) {
+      return res.status(404).json({
+        message: "Chapter not found.",
+      });
+    }
 
     if (!req.file) {
       return res.status(400).json({
-        message: "Please upload the file",
+        message: "Please upload a file.",
       });
     }
+
     const note = await Note.create({
       title,
-      subject,
-      fileName: req.file.filename,
-      fileUrl: `/uploads/${req.file.filename}`,
+      chapter: chapterId,
+      fileName: req.file.originalname,
+      fileUrl: req.file.path,
+      publicId: req.file.filename,
       fileType: req.file.mimetype.includes("pdf") ? "pdf" : "image",
       uploadedBy: req.user.id,
     });
 
-    res.status(201).json({
-      success: true,
-      note,
-    });
-  } catch (error) {
+    res.status(201).json(note);
+  } catch (err) {
+    console.error(err);
+
     res.status(500).json({
-      message: error.message,
+      message: "Failed to upload note.",
     });
   }
 }
 
-async function getMyNotes(req, res) {
+export async function getNotesByChapter(req, res) {
   try {
+    const { chapterId } = req.params;
+
     const notes = await Note.find({
+      chapter: chapterId,
       uploadedBy: req.user.id,
-    }).sort({ createdAt: -1 });
+    }).sort({
+      createdAt: -1,
+    });
 
     res.json(notes);
-  } catch (error) {
+  } catch (err) {
+    console.error(err);
+
     res.status(500).json({
-      message: error.message,
+      message: "Failed to fetch notes.",
     });
   }
 }
 
-async function deleteNote(req, res) {
+export async function deleteNote(req, res) {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await Note.findOne({
+      _id: req.params.id,
+      uploadedBy: req.user.id,
+    });
 
     if (!note) {
       return res.status(404).json({
-        message: "Note not found",
-      });
-    }
-    if (note.uploadedBy.toString() !== req.user.id) {
-      return res.status(403).json({
-        message: "Access denied",
+        message: "Note not found.",
       });
     }
 
-    fs.unlinkSync(path.join("uploads", note.fileName));
+    await cloudinary.uploader.destroy(note.publicId, {
+      resource_type: "raw",
+    });
 
     await note.deleteOne();
 
     res.json({
-      message: "Note deleted successfully",
+      message: "Note deleted successfully.",
     });
-  } catch (error) {
+  } catch (err) {
+    console.error(err);
+
     res.status(500).json({
-      message: error.message,
+      message: "Failed to delete note.",
     });
   }
 }
-
-export { deleteNote, getMyNotes, uploadNote };

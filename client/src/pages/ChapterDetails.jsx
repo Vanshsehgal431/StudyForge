@@ -154,13 +154,6 @@ function ChapterDetails() {
     );
   };
 
-  const handleGenerateQuiz = () => {
-    console.log("Generate quiz for:", {
-      subjectId,
-      chapterId,
-    });
-  };
-
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -305,13 +298,6 @@ function ChapterDetails() {
             />
           </section>
         </div>
-
-        <button type="button" className="quiz-cta" onClick={handleGenerateQuiz}>
-          <span className="quiz-cta-icon" aria-hidden="true">
-            ⚡
-          </span>
-          Generate Quiz
-        </button>
       </div>
     </div>
   );
