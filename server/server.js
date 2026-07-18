@@ -17,7 +17,10 @@ const port = process.env.PORT || 5000;
 app.use("/uploads", express.static("uploads"));
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://study-forge-b7bawa93h-engine-v12.vercel.app",
+    ],
     credentials: true,
   }),
 );
