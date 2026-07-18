@@ -1,14 +1,35 @@
-/* ================= Dashboard ================= */
-/* Design tokens (--bg, --accent, --border, etc.) come from theme.css,
-   imported once in main.jsx. This file only contains Dashboard-page
-   specific layout and component styles. */
+/* ==========================================
+   StudyForge - Dashboard CSS Theme
+   Original class names with ChapterDetails styling
+   ========================================== */
+
+:root {
+  --accent-lime: #d4f550;
+  --accent-lime-dark: #c1e540;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666;
+  --border-light: #e8e8e8;
+  --bg-light: #f9f9f9;
+  --bg-white: #ffffff;
+  --success-green: #10b981;
+  --danger-red: #ef4444;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================
+   Main Dashboard Layout
+   ========================================== */
 
 .dashboard {
   position: relative;
   display: flex;
-  height: 100vh; /* fixed viewport height, not min-height */
-  background: var(--bg);
-  overflow: hidden; /* only the OUTER shell clips; inner content scrolls itself */
+  height: 100vh;
+  background: var(--bg-white);
+  overflow: hidden;
 }
 
 .sidebar,
@@ -17,19 +38,21 @@
   z-index: 1;
 }
 
-/* ================= Sidebar ================= */
+/* ==========================================
+   Sidebar / Navigation Panel
+   ========================================== */
 
 .sidebar {
   width: 220px;
   flex-shrink: 0;
   height: 100vh;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
+  background: var(--bg-light);
+  border-right: 1px solid var(--border-light);
   padding: 22px 14px;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* sidebar itself no longer scrolls as a whole */
-  transition: transform var(--transition);
+  overflow: hidden;
+  transition: transform 0.3s ease;
 }
 
 .logo {
@@ -39,16 +62,33 @@
   letter-spacing: -0.02em;
   margin-bottom: 28px;
   padding-left: 10px;
-  flex-shrink: 0; /* logo never shrinks or scrolls away */
+  flex-shrink: 0;
 }
 
 .sidebar nav {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  flex: 1; /* takes up all remaining space between logo and logout */
-  overflow-y: auto; /* nav scrolls internally if links overflow */
-  min-height: 0; /* required for flex children to actually scroll instead of overflowing */
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.sidebar nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar nav::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+
+.sidebar nav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 .sidebar nav a {
@@ -61,67 +101,83 @@
   gap: 10px;
   padding: 8px 10px;
   border-radius: var(--radius-md);
-  transition:
-    background var(--transition),
-    color var(--transition);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .sidebar nav a:hover {
-  background: var(--surface-hover);
+  background: rgba(212, 245, 80, 0.1);
   color: var(--text-primary);
 }
 
 .sidebar nav a.active {
-  background: var(--accent-tint);
+  background: rgba(212, 245, 80, 0.2);
   color: var(--text-primary);
   font-weight: 600;
+  border-left: 3px solid var(--accent-lime);
+  padding-left: 7px;
 }
 
 .logout-btn {
-  flex-shrink: 0; /* never gets squeezed */
+  flex-shrink: 0;
   margin-top: 14px;
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--danger);
+  border: 1.5px solid var(--border-light);
+  color: var(--danger-red);
   font-weight: 600;
   font-size: 12.5px;
   padding: 8px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    background var(--transition),
-    border-color var(--transition),
-    filter 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: #ffffff;
-  font-weight: 700;
-  filter: brightness(1.12) saturate(1.15);
-  box-shadow:
-    0 0 0 1px var(--danger),
-    0 4px 14px -4px var(--danger);
+  background: var(--danger-red);
+  border-color: var(--danger-red);
+  color: var(--bg-white);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
 }
 
 .logout-btn:active {
-  transform: translateY(0.5px);
+  transform: translateY(0);
   filter: brightness(0.95);
 }
 
-/* ================= Main ================= */
+/* ==========================================
+   Main Content Area
+   ========================================== */
 
 .dashboard-content {
   flex: 1;
   min-width: 0;
   height: 100vh;
-  overflow-y: auto; /* this panel scrolls independently */
+  overflow-y: auto;
   padding: 24px 30px;
+  background: var(--bg-white);
 }
 
-/* ================= Navbar ================= */
+.dashboard-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ==========================================
+   Header / Navbar
+   ========================================== */
 
 .navbar {
   display: flex;
@@ -135,6 +191,7 @@
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--text-primary);
+  margin: 0;
 }
 
 .navbar-user {
@@ -142,72 +199,87 @@
   font-size: 12px;
   color: var(--text-primary);
   text-transform: capitalize;
-  background: var(--accent-tint);
-  border: 1px solid var(--border);
-  padding: 5px 12px;
-  border-radius: 999px;
+  background: rgba(212, 245, 80, 0.15);
+  border: 1px solid var(--border-light);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
 }
 
-/* ================= Welcome Section ================= */
+.navbar-user:hover {
+  background: rgba(212, 245, 80, 0.25);
+  border-color: var(--accent-lime);
+}
+
+/* ==========================================
+   Welcome Section / Card
+   ========================================== */
 
 .welcome-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 18px;
-
+  padding: 24px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
 }
 
-.welcome-content h1 {
+.welcome-section:hover {
+  border-color: var(--accent-lime);
+  box-shadow: var(--shadow-md);
+}
+
+.welcome-section h1 {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin: 0 0 8px 0;
 }
 
-.welcome-content p {
+.welcome-section p {
   color: var(--text-secondary);
   font-size: 13.5px;
-  line-height: 1.55;
+  line-height: 1.6;
   max-width: 480px;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
 }
 
 .subject-count {
   display: inline-flex;
   align-items: center;
-  padding: 5px 12px;
-  background: var(--accent-tint);
+  padding: 6px 14px;
+  background: rgba(212, 245, 80, 0.15);
   color: var(--text-primary);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 12.5px;
   font-weight: 600;
+  border: 1px solid var(--border-light);
 }
 
 .new-subject-btn {
-  background: var(--accent);
+  background: var(--accent-lime);
   color: var(--text-primary);
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   padding: 10px 20px;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .new-subject-btn:hover {
-  background: var(--accent-hover);
-  filter: brightness(1.1) saturate(1.15);
+  background: var(--accent-lime-dark);
+  box-shadow: 0 4px 16px rgba(212, 245, 80, 0.35);
+  transform: translateY(-2px);
   font-weight: 700;
-  box-shadow: var(--shadow-md);
 }
 
 .new-subject-btn:active {
@@ -215,222 +287,253 @@
   filter: brightness(0.95);
 }
 
-/* ================= Subject List ================= */
+/* ==========================================
+   Subject Section / Card
+   ========================================== */
 
 .subject-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 18px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
+  padding: 24px;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
 }
 
-.subject-content h1 {
-  font-size: 1.5rem;
+.subject-section:hover {
+  border-color: var(--accent-lime);
+  box-shadow: var(--shadow-md);
+}
+
+.subject-section h1 {
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin: 0 0 16px 0;
+}
+
+.subject-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .subject-content li {
   color: var(--text-secondary);
   font-size: 13.5px;
-  line-height: 1.55;
-  max-width: 480px;
-  margin-bottom: 10px;
+  line-height: 1.6;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.subject-content ul {
-  padding-inline-start: 18px;
+.subject-content li:last-child {
+  border-bottom: none;
 }
-
-/* ================= Subject Id ================= */
 
 .subject-id {
   color: var(--text-primary);
-  font-size: 13.5px;
-  font-weight: bolder;
-  line-height: 1.55;
-  max-width: 480px;
-  margin-bottom: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: "Courier New", monospace;
+  padding: 4px 8px;
+  background: rgba(212, 245, 80, 0.1);
+  border-radius: 4px;
 }
 
-/* ================= Study Overview ================= */
+/* ==========================================
+   Study Overview / Card
+   ========================================== */
 
 .study-overview {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 18px;
+  padding: 24px;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.study-overview:hover {
+  border-color: var(--accent-lime);
+  box-shadow: var(--shadow-md);
 }
 
 .study-overview h2 {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 14px;
+  margin: 0 0 16px 0;
 }
 
 .overview-list {
   display: flex;
   flex-direction: column;
+  gap: 0;
 }
 
 .overview-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
-
-  padding: 12px 0;
-
-  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.2s ease;
 }
 
 .overview-item:last-child {
   border-bottom: none;
 }
 
+.overview-item:hover {
+  background: rgba(212, 245, 80, 0.05);
+  padding: 14px 12px;
+  margin: 0 -12px;
+  border-radius: 6px;
+}
+
 .overview-icon {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  flex-shrink: 0;
 }
 
 .overview-info h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 2px;
+  margin: 0 0 4px 0;
 }
 
 .overview-info p {
   color: var(--text-secondary);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
+  margin: 0;
 }
 
-/* ================= Hamburger ================= */
-
-.menu-btn {
-  display: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition);
-}
-
-.menu-btn:hover {
-  background: var(--surface-hover);
-}
-
-/* ================= Recent ================= */
+/* ==========================================
+   Recent Section / Card
+   ========================================== */
 
 .recent {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 20px 24px;
   box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.recent:hover {
+  border-color: var(--accent-lime);
+  box-shadow: var(--shadow-md);
 }
 
 .recent h2 {
   font-size: 14.5px;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
   color: var(--text-primary);
 }
 
 .recent p {
   color: var(--text-secondary);
   font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
 }
 
 .logout-under-recent {
-  background-color: var(--accent);
+  background-color: var(--accent-lime);
   color: var(--text-primary);
   border: none;
-  border-radius: 5px;
-  padding: 5px 25px;
-  font-weight: bolder;
+  border-radius: var(--radius-md);
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
-  transition:
-    filter 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: all 0.2s ease;
+  margin-top: 12px;
 }
 
 .logout-under-recent:hover {
-  background-color: var(--accent-hover);
-  filter: brightness(1.15) saturate(1.2);
-  box-shadow: var(--shadow-md);
+  background-color: var(--accent-lime-dark);
+  box-shadow: 0 4px 12px rgba(212, 245, 80, 0.3);
+  transform: translateY(-1px);
+  font-weight: 700;
 }
 
 .logout-under-recent:active {
-  filter: brightness(0.92);
+  transform: translateY(0);
+  filter: brightness(0.95);
 }
 
-/* ================= Create Subject Modal ================= */
+/* ==========================================
+   Modal Overlay
+   ========================================== */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 1100;
-  background: rgba(6, 9, 18, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(26, 26, 26, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 16px;
+  animation: fadeIn 0.2s ease;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==========================================
+   Subject Modal / Dialog
+   ========================================== */
 
 .subject-modal {
   width: 100%;
-  max-width: 360px;
-  background: var(--surface-solid, var(--sidebar-bg));
-  background-color: var(--surface);
-  border: 1px solid var(--border);
+  max-width: 380px;
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 22px 24px;
-  box-shadow:
-    var(--shadow-md),
-    0 20px 60px -10px rgba(0, 0, 0, 0.6);
-  /* Force full opacity regardless of how translucent --surface is defined,
-     since this card sits directly over the animated starfield background
-     rather than layered on top of other opaque panels like it is elsewhere. */
-  isolation: isolate;
-}
-
-.subject-modal::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgb(203, 203, 203);
-  opacity: 1;
-  border-radius: inherit;
-  z-index: -1;
-}
-
-.subject-modal {
+  padding: 28px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
   position: relative;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .subject-modal h2 {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 18px;
+  margin: 0 0 20px 0;
 }
 
 .subject-modal .form-group {
@@ -439,7 +542,7 @@
 
 .subject-modal .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 600;
   color: var(--text-primary);
   font-size: 13px;
@@ -447,18 +550,20 @@
 
 .subject-modal .form-group input {
   width: 100%;
-  padding: 9px 12px;
-  border: 1px solid var(--border);
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-md);
   outline: none;
   font-size: 13.5px;
   color: var(--text-primary);
-  background: transparent;
-  transition: border-color 0.15s ease;
+  background: var(--bg-white);
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .subject-modal .form-group input:focus {
-  border-color: var(--text-primary);
+  border-color: var(--accent-lime);
+  box-shadow: 0 0 0 3px rgba(212, 245, 80, 0.15);
 }
 
 .subject-modal .form-group input::placeholder {
@@ -469,66 +574,110 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 24px;
 }
 
 .cancel-btn {
   background: transparent;
   color: var(--text-secondary);
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-full);
   padding: 9px 18px;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    background var(--transition),
-    color var(--transition);
+  transition: all 0.2s ease;
 }
 
 .cancel-btn:hover {
-  background: var(--surface-hover);
+  background: var(--bg-light);
   color: var(--text-primary);
-  font-weight: 700;
+  border-color: var(--accent-lime);
+}
+
+.cancel-btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
 }
 
 .create-btn {
-  background: var(--accent);
+  background: var(--accent-lime);
   color: var(--text-primary);
   border: none;
-  border-radius: 999px;
-  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  padding: 9px 20px;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    background var(--transition),
-    box-shadow var(--transition),
-    filter 0.15s ease;
-}
-
-.create-btn:hover {
-  background: var(--accent-hover);
-  filter: brightness(1.12) saturate(1.15);
-  font-weight: 700;
+  transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
 }
 
-.create-btn:active,
-.cancel-btn:active {
+.create-btn:hover {
+  background: var(--accent-lime-dark);
+  box-shadow: 0 4px 12px rgba(212, 245, 80, 0.3);
+  transform: translateY(-1px);
+  font-weight: 700;
+}
+
+.create-btn:active {
   transform: translateY(0);
   filter: brightness(0.95);
 }
 
-/* ================= Overlay ================= */
+.create-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   Mobile Menu Trigger
+   ========================================== */
+
+.menu-btn {
+  display: none;
+  background: transparent;
+  border: 1.5px solid var(--border-light);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 18px;
+}
+
+.menu-btn:hover {
+  background: var(--bg-light);
+  border-color: var(--accent-lime);
+}
+
+/* ==========================================
+   Sidebar Overlay (Mobile)
+   ========================================== */
 
 .sidebar-overlay {
   display: none;
   opacity: 0;
-  transition: opacity var(--transition);
+  transition: opacity 0.3s ease;
 }
 
-/* ================= Mobile ================= */
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+}
+
+/* ==========================================
+   Responsive Design
+   ========================================== */
 
 @media (max-width: 900px) {
   .menu-btn {
@@ -539,41 +688,18 @@
     position: fixed;
     left: 0;
     top: 0;
+    width: 220px;
     height: 100vh;
     z-index: 1001;
     transform: translateX(-100%);
-    /* On mobile the sidebar becomes a drawer floating directly over the
-       animated cosmic background rather than sitting beside the main
-       panel, so the low-alpha desktop token isn't enough on its own —
-       give it a solid backdrop + blur so content never shows through. */
-    background-color: var(--sidebar-bg);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    box-shadow: 4px 0 24px -6px rgba(0, 0, 0, 0.55);
-  }
-
-  .sidebar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--bg);
-    opacity: 1;
-    z-index: -1;
+    background: var(--bg-light);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
   }
 
   .sidebar.active {
     transform: translateX(0);
-  }
-
-  .sidebar-overlay.active {
-    display: block;
-    opacity: 1;
-    position: fixed;
-    inset: 0;
-    background: rgb(203, 203, 203);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 1000;
   }
 
   .dashboard-content {
@@ -594,14 +720,54 @@
   .new-subject-btn {
     width: 100%;
   }
+
+  .navbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
 
-@media (max-width: 600px) {
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 640px) {
   .navbar-user {
     display: none;
   }
+
+  .dashboard-content {
+    padding: 12px 16px;
+  }
+
+  .welcome-section,
+  .subject-section,
+  .study-overview,
+  .recent {
+    padding: 16px;
+  }
+
+  .navbar h2 {
+    font-size: 15px;
+  }
+
+  .overview-item {
+    padding: 12px 0;
+  }
+
+  .subject-modal {
+    max-width: calc(100% - 32px);
+  }
+}
+
+/* ==========================================
+   Accessibility & Motion
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
