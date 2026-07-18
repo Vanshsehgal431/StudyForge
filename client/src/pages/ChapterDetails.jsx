@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import styles from "../styles/ChapterDetails.module.css";
 
 function ChapterDetails() {
   const { subjectId, chapterId } = useParams();
@@ -9,9 +10,13 @@ function ChapterDetails() {
 
   const [topics, setTopics] = useState([]);
   const [resources, setResources] = useState([]);
+  const [notesFiles, setNotesFiles] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState("");
+  const [uploadingNote, setUploadingNote] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   const progress = useMemo(() => {
     if (topics.length === 0) return 0;
@@ -119,6 +124,32 @@ function ChapterDetails() {
     }
   };
 
+  const fetchNotes = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/notes/chapter/${chapterId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      setNotesFiles(data);
+
+      return data;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
   const generateRoadmap = async () => {
     try {
       const res = await fetch(
@@ -154,6 +185,95 @@ function ChapterDetails() {
     );
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+      setUploadingNote(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("title", file.name);
+
+      const res = await fetch(
+        `http://localhost:5000/api/notes/chapter/${chapterId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      await fetchNotes();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUploadingNote(false);
+      e.target.value = "";
+    }
+  };
+
+  const deleteNote = async (noteId) => {
+    const prevNotes = [...notesFiles];
+
+    setNotesFiles((prev) => prev.filter((note) => note._id !== noteId));
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/notes/${noteId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setNotesFiles(prevNotes);
+    }
+  };
+
+  const viewNote = async (noteId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/notes/${noteId}/view`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      window.open(data.url, "_blank");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to open note.");
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -169,7 +289,7 @@ function ChapterDetails() {
           await fetchTopics();
         }
 
-        await fetchResources();
+        await Promise.all([fetchResources(), fetchNotes()]);
       } finally {
         setLoading(false);
       }
@@ -180,9 +300,9 @@ function ChapterDetails() {
 
   if (loading) {
     return (
-      <div className="chapter-page">
-        <div className="chapter-shell">
-          <p className="chapter-status">Loading chapter...</p>
+      <div className={styles.studyArena}>
+        <div className={styles.studyContainer}>
+          <p className={styles.statusMessage}>Loading chapter...</p>
         </div>
       </div>
     );
@@ -190,59 +310,61 @@ function ChapterDetails() {
 
   if (!chapter || !subject) {
     return (
-      <div className="chapter-page">
-        <div className="chapter-shell">
-          <p className="chapter-status">Couldn't find this chapter.</p>
+      <div className={styles.studyArena}>
+        <div className={styles.studyContainer}>
+          <p className={styles.statusMessage}>Couldn't find this chapter.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="chapter-page">
-      <div className="chapter-shell">
+    <div className={styles.studyArena}>
+      <div className={styles.studyContainer}>
         {/* Breadcrumb */}
-        <div className="chapter-breadcrumb">
-          <Link to={`/courses/${subjectId}`} className="breadcrumb-link">
+        <div className={styles.navTrail}>
+          <Link to={`/courses/${subjectId}`} className={styles.trailLink}>
             {subject.name}
           </Link>
-          <span className="breadcrumb-sep">/</span>
-          <span className="breadcrumb-current">{chapter.name}</span>
+          <span className={styles.trailSeparator}>/</span>
+          <span className={styles.trailCurrent}>{chapter.name}</span>
         </div>
 
         {/* Header */}
-        <header className="chapter-header">
-          <div className="chapter-title-row">
-            <span className="chapter-icon" aria-hidden="true">
+        <header className={styles.studyHeader}>
+          <div className={styles.headerTitleRow}>
+            <span className={styles.headerIcon} aria-hidden="true">
               {"📖"}
             </span>
-            <h1 className="chapter-title">{chapter.name}</h1>
+            <h1 className={styles.studyTitle}>{chapter.name}</h1>
           </div>
 
-          <div className="chapter-progress">
-            <div className="progress-track">
+          <div className={styles.completionGauge}>
+            <div className={styles.gaugeTrack}>
               <div
-                className="progress-fill"
+                className={styles.gaugeFill}
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <span className="progress-label">{progress}%</span>
+            <span className={styles.gaugeLabel}>{progress}%</span>
           </div>
         </header>
 
-        <div className="chapter-grid">
+        <div className={styles.contentGrid}>
           {/* Study Roadmap */}
-          <section className="chapter-card">
-            <h2 className="card-heading">Study Roadmap</h2>
+          <section className={styles.contentBlock}>
+            <h2 className={styles.blockHeading}>Study Roadmap</h2>
             {topics.length === 0 ? (
-              <p className="chapter-empty">No topics added yet.</p>
+              <p className={styles.emptyState}>No topics added yet.</p>
             ) : (
-              <ul className="roadmap-list">
+              <ul className={styles.milestoneTrack}>
                 {topics.map((topic) => (
-                  <li key={topic._id} className="roadmap-item">
+                  <li key={topic._id} className={styles.milestoneItem}>
                     <button
                       type="button"
-                      className={`roadmap-check ${topic.completed ? "is-done" : ""}`}
+                      className={`${styles.checkboxMarker} ${
+                        topic.completed ? styles.isDone : ""
+                      }`}
                       onClick={() => toggleItem(topic._id)}
                       aria-pressed={topic.completed}
                       aria-label={`Mark "${topic.title}" as ${
@@ -252,7 +374,9 @@ function ChapterDetails() {
                       {topic.completed ? "✓" : ""}
                     </button>
                     <span
-                      className={`roadmap-label ${topic.completed ? "is-done" : ""}`}
+                      className={`${styles.milestoneLabel} ${
+                        topic.completed ? styles.isDone : ""
+                      }`}
                     >
                       {topic.title}
                     </span>
@@ -262,21 +386,21 @@ function ChapterDetails() {
             )}
           </section>
 
-          <section className="chapter-card">
-            <h2 className="card-heading">Resources</h2>
+          <section className={styles.contentBlock}>
+            <h2 className={styles.blockHeading}>Resources</h2>
             {resources.length === 0 ? (
-              <p className="chapter-empty">No resources added yet.</p>
+              <p className={styles.emptyState}>No resources added yet.</p>
             ) : (
-              <ul className="resource-list">
+              <ul className={styles.resourceHub}>
                 {resources.map((res) => (
-                  <li key={res._id} className="resource-item">
+                  <li key={res._id} className={styles.resourceItem}>
                     <a
                       href={res.url}
-                      className="resource-link"
+                      className={styles.resourceLink}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <span className="resource-icon" aria-hidden="true">
+                      <span className={styles.resourceIcon} aria-hidden="true">
                         {"🔗"}
                       </span>
                       {res.title}
@@ -287,15 +411,58 @@ function ChapterDetails() {
             )}
           </section>
 
-          <section className="chapter-card chapter-card--wide">
-            <h2 className="card-heading">Notes</h2>
-            <textarea
-              className="notes-area"
-              placeholder="Jot down key ideas, formulas, or things to revisit..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={6}
-            />
+          {/* Notes */}
+          <section className={`${styles.contentBlock} ${styles.blockWide}`}>
+            <div className={styles.blockHeadingRow}>
+              <h2 className={styles.blockHeading}>📄 Notes</h2>
+              <button
+                type="button"
+                className={styles.uploadNoteButton}
+                onClick={handleUploadClick}
+                disabled={uploadingNote}
+              >
+                {uploadingNote ? "Uploading..." : "+ Upload Note"}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg"
+                hidden
+                onChange={handleFileChange}
+              />
+            </div>
+
+            {notesFiles.length === 0 ? (
+              <p className={styles.emptyState}>No notes uploaded yet.</p>
+            ) : (
+              <ul className={styles.documentVault}>
+                {notesFiles.map((note) => (
+                  <li key={note._id} className={styles.documentItem}>
+                    <div className={styles.documentLinkWrapper}>
+                      <span className={styles.documentIcon} aria-hidden="true">
+                        📄
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.documentLink}
+                        onClick={() => viewNote(note._id)}
+                      >
+                        {note.title}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.documentDelete}
+                      onClick={() => deleteNote(note._id)}
+                      aria-label={`Delete "${note.title}"`}
+                    >
+                      🗑
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         </div>
       </div>

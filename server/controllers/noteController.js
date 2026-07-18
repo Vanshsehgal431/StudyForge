@@ -1,4 +1,7 @@
-import cloudinary from "../config/cloudinary.js";
+import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import s3 from "../config/s3.js";
 import Chapter from "../models/Chapter.js";
 import Note from "../models/Note.js";
 
@@ -28,8 +31,7 @@ export async function uploadNote(req, res) {
       title,
       chapter: chapterId,
       fileName: req.file.originalname,
-      fileUrl: req.file.path,
-      publicId: req.file.filename,
+      s3Key: req.file.key,
       fileType: req.file.mimetype.includes("pdf") ? "pdf" : "image",
       uploadedBy: req.user.id,
     });
@@ -43,7 +45,39 @@ export async function uploadNote(req, res) {
     });
   }
 }
+export async function viewNote(req, res) {
+  try {
+    const note = await Note.findOne({
+      _id: req.params.id,
+      uploadedBy: req.user.id,
+    });
 
+    if (!note) {
+      return res.status(404).json({
+        message: "Note not found.",
+      });
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: note.s3Key,
+    });
+
+    const signedUrl = await getSignedUrl(s3, command, {
+      expiresIn: 900, // 15 minutes
+    });
+
+    res.json({
+      url: signedUrl,
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Failed to generate file URL.",
+    });
+  }
+}
 export async function getNotesByChapter(req, res) {
   try {
     const { chapterId } = req.params;
@@ -78,9 +112,12 @@ export async function deleteNote(req, res) {
       });
     }
 
-    await cloudinary.uploader.destroy(note.publicId, {
-      resource_type: "raw",
-    });
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: note.s3Key,
+      }),
+    );
 
     await note.deleteOne();
 

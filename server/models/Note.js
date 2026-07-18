@@ -5,7 +5,6 @@ const noteSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true,
     },
 
     chapter: {
@@ -19,12 +18,7 @@ const noteSchema = new mongoose.Schema(
       required: true,
     },
 
-    fileUrl: {
-      type: String,
-      required: true,
-    },
-
-    publicId: {
+    s3Key: {
       type: String,
       required: true,
     },

@@ -1,4 +1,4 @@
-import { FiBook, FiClipboard, FiHome, FiLogOut, FiUser } from "react-icons/fi";
+import { FiBook, FiHome, FiLogOut, FiUser } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -25,11 +25,6 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <Link to="/dashboard" onClick={() => setSidebarOpen(false)}>
             <FiHome /> Dashboard
           </Link>
-
-          <Link to="/notes" onClick={() => setSidebarOpen(false)}>
-            <FiClipboard /> Notes
-          </Link>
-
           <Link to="/courses" onClick={() => setSidebarOpen(false)}>
             <FiBook /> Courses
           </Link>
