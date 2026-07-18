@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import CreateSubjectModal from "../components/CreateSubjectModal";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -9,6 +8,7 @@ import StudyOverview from "../components/StudyOverview";
 import SubjectList from "../components/SubjectList";
 import WelcomeSection from "../components/WelcomeSection";
 import "../styles/dashboard.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -20,14 +20,11 @@ function Dashboard() {
   const fetchDashboard = async () => {
     const token = localStorage.getItem("token");
 
-    const dashboardRes = await axios.get(
-      "http://localhost:5000/api/dashboard",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const dashboardRes = await axios.get(`${API_URL}/api/dashboard`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     setDashboard(dashboardRes.data);
   };
@@ -40,7 +37,7 @@ function Dashboard() {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("http://localhost:5000/api/auth/me", {
+        const response = await axios.get(`${API_URL}/api/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import CreateSubjectModal from "../components/CreateSubjectModal";
 import Sidebar from "../components/Sidebar";
 import "../styles/Subjects.css";
-
-const API_URL = "http://localhost:5000/api/subjects";
+const api = import.meta.env.VITE_API_URL;
+const API_URL = `${api}/api/subjects`;
 
 function Subjects() {
   const navigate = useNavigate();

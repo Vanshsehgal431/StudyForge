@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import styles from "../styles/ChapterDetails.module.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function ChapterDetails() {
   const { subjectId, chapterId } = useParams();
@@ -13,7 +14,7 @@ function ChapterDetails() {
   const [notesFiles, setNotesFiles] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [notes, setNotes] = useState("");
+
   const [uploadingNote, setUploadingNote] = useState(false);
 
   const fileInputRef = useRef(null);
@@ -28,14 +29,11 @@ function ChapterDetails() {
 
   const fetchChapter = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/chapters/${chapterId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/chapters/${chapterId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -51,14 +49,11 @@ function ChapterDetails() {
 
   const fetchSubject = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/subjects/${subjectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/subjects/${subjectId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -74,14 +69,11 @@ function ChapterDetails() {
 
   const fetchTopics = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/topics/chapter/${chapterId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/topics/chapter/${chapterId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -100,14 +92,11 @@ function ChapterDetails() {
 
   const fetchResources = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/resources/chapter/${chapterId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/resources/chapter/${chapterId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -126,14 +115,11 @@ function ChapterDetails() {
 
   const fetchNotes = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/notes/chapter/${chapterId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/notes/chapter/${chapterId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -152,15 +138,12 @@ function ChapterDetails() {
 
   const generateRoadmap = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/ai/generate/${chapterId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/ai/generate/${chapterId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
@@ -201,16 +184,13 @@ function ChapterDetails() {
       formData.append("file", file);
       formData.append("title", file.name);
 
-      const res = await fetch(
-        `http://localhost:5000/api/notes/chapter/${chapterId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: formData,
+      const res = await fetch(`${API_URL}/api/notes/chapter/${chapterId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+        body: formData,
+      });
 
       const data = await res.json();
 
@@ -233,7 +213,7 @@ function ChapterDetails() {
     setNotesFiles((prev) => prev.filter((note) => note._id !== noteId));
 
     try {
-      const res = await fetch(`http://localhost:5000/api/notes/${noteId}`, {
+      const res = await fetch(`${API_URL}/api/notes/${noteId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -252,14 +232,11 @@ function ChapterDetails() {
 
   const viewNote = async (noteId) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/notes/${noteId}/view`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/notes/${noteId}/view`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 

@@ -4,8 +4,7 @@ import CreateChapterModal from "../components/CreateChapterModal";
 import Sidebar from "../components/Sidebar";
 
 // // import "../styles/Chapters.css";
-const API_URL = "http://localhost:5000/api/chapters";
-
+const API_URL = import.meta.env.VITE_API_URL;
 function Chapters() {
   const navigate = useNavigate();
   const { subjectId } = useParams();
@@ -23,14 +22,11 @@ function Chapters() {
 
   const fetchChapters = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/chapters/subject/${subjectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/chapters/subject/${subjectId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
       const data = await res.json();
 
       if (!res.ok) {
@@ -44,14 +40,11 @@ function Chapters() {
   };
   const fetchSubject = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/subjects/${subjectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await fetch(`${API_URL}/api/subjects/${subjectId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       const data = await res.json();
 
